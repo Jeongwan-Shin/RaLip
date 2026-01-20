@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="asset/Icon.png">
-    <img alt="Icon" src="Icon.png" width="600" style="max-width: 100%;">
+    <img alt="Icon" src="Icon.png" width="150" style="max-width: 100%;">
   </picture>
 </p>
 
