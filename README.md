@@ -5,6 +5,7 @@
   </picture>
 </p>
 
+# RaLIP: Aligning mmWave Radar to the Language–Image Space via Pretraining for Human Understanding
 <p align="center">
   <strong>Fully Open Framework for Radar Encoder Training</strong>
 </p>
