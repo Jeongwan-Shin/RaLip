@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../../Train_mmWave_Encoder"
+		},
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../RaLip"
+		}
+	],
+	"settings": {}
+}
