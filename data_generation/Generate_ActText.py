@@ -24,6 +24,7 @@ PROMPT_TEMPLATE = """You will generate **5 simple English sentences** describing
 
 Requirements:
 - The action name (field `action`) must appear in every sentence **verbatim** (exact spelling/case/hyphens/spaces). Example: if action is "T-Pose", each sentence must include the exact substring "T-Pose".
+- This dataset describes exactly **one person**. Use singular phrasing such as "The person ..." in every sentence. Do NOT use plural pronouns like "they/them/their/theirs".
 - The 5 sentences must describe the same action but use **slightly different wording/phrasing** (no near-duplicates).
 - Prefer short present progressive / present tense sentences (e.g., "is holding...", "is doing...", "is standing in...").
 - Do NOT add numbering or bullet points; return plain sentences only.
@@ -35,9 +36,9 @@ Input annotation:
 Output sentences:
 [
   "The person is holding a T-Pose with both arms extended.",
-  "They are standing in a T-Pose with arms stretched out to the sides.",
+  "The person is standing in a T-Pose with arms stretched out to the sides.",
   "The person is doing a T-Pose by raising both arms to shoulder height.",
-  "They are maintaining a T-Pose posture with their arms spread wide.",
+  "The person is maintaining a T-Pose posture with arms spread wide.",
   "The person is posing in a T-Pose with both arms held straight out."
 ]
 
@@ -155,16 +156,8 @@ def _call_gpt_41(prompt: str, model: str, temperature: float, max_retries: int) 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument(
-        "--input",
-        default="/workspace/RaLip/data_generation/mm_actions.json",
-        help="Path to mm_actions.json (JSON array).",
-    )
-    ap.add_argument(
-        "--output",
-        default="/workspace/RaLip/data_generation/mm_actions_text.jsonl",
-        help="Output JSONL path (append-only, resumable).",
-    )
+    ap.add_argument("--input", default="/workspace/RaLip/data_generation/mm_actions.json", help="Path to mm_actions.json (JSON array).")
+    ap.add_argument("--output", default="/workspace/RaLip/data_generation/mm_actions_text.jsonl", help="Output JSONL path (append-only, resumable).")
     ap.add_argument("--model", default="gpt-4.1", help="OpenAI model name (default: gpt-4.1).")
     ap.add_argument("--temperature", type=float, default=0.4)
     ap.add_argument("--max-retries", type=int, default=6)
@@ -187,12 +180,7 @@ def main() -> None:
                 continue
 
             prompt = _build_prompt(item)
-            sentences = _call_gpt_41(
-                prompt=prompt,
-                model=args.model,
-                temperature=args.temperature,
-                max_retries=args.max_retries,
-            )
+            sentences = _call_gpt_41(prompt=prompt, model=args.model, temperature=args.temperature, max_retries=args.max_retries)
 
             record = {
                 "key": key,
