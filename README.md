@@ -22,17 +22,17 @@
 
 **Goal**: Generate *Radar–Text* pairs by converting action annotations into 5 short English sentences per action.
 
-- **Script**: `Train_mmWave_Encoder/preprocessing/radar_text_pair_generation.py`
-- **Input**: `Train_mmWave_Encoder/datasets/mm_actions.json`
+- **Script**: `preprocessing/radar_text_pair_generation.py`
+- **Input**: `mm_actions.json`
 - **Output**: JSONL file (append-only, resumable) with 5 sentences per action segment.
 
 **Run**:
 
 ```bash
 export OPENAI_API_KEY="YOUR_KEY"
-python /workspace/Train_mmWave_Encoder/preprocessing/radar_text_pair_generation.py \
-  --input  /workspace/Train_mmWave_Encoder/datasets/mm_actions.json \
-  --output /workspace/Train_mmWave_Encoder/datasets/mm_actions_text3.jsonl \
+python preprocessing/radar_text_pair_generation.py \
+  --input  mm_actions.json \
+  --output mm_actions_text.jsonl \
   --model  gpt-4.1
 ```
 

@@ -13,7 +13,7 @@ from torch.utils.data import DataLoader
 def selected_datasets(value: str):
     value = value.strip()
     if value.lower() in {"all", "*"}:
-        return ["MARS", "mRI", "mmFI", "mmBody"]
+        return ["MARS", "mRI", "mmFI", "mmBody", "HuPR"]
     return [v.strip() for v in value.split(",") if v.strip()]
 
 

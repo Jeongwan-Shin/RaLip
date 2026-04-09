@@ -35,11 +35,11 @@ Input annotation:
 {{"action":"T-Pose","body_part":{{"left arm":false,"right arm":false,"left leg":false,"right leg":false}},"movement":false}}
 Output sentences:
 [
-  "The person is holding a T-Pose with both arms extended.",
-  "The person is standing in a T-Pose with arms stretched out to the sides.",
-  "The person is doing a T-Pose by raising both arms to shoulder height.",
-  "The person is maintaining a T-Pose posture with arms spread wide.",
-  "The person is posing in a T-Pose with both arms held straight out."
+  "A subject is holding a T-Pose with both arms extended.",
+  "Standing in a T-Pose, the arms are stretched out to the sides.",
+  "With both arms raised to shoulder height, a T-Pose is being performed.",
+  "A T-Pose posture is maintained with the arms spread wide.",
+  "Both arms are held straight out while performing a T-Pose."
 ]
 
 Now generate 5 sentences in the same style for this annotation:
@@ -103,14 +103,13 @@ def _call_gpt_41(prompt: str, model: str, temperature: float, max_retries: int) 
     Returns a list of exactly 5 sentences.
     Requires: `pip install openai` and OPENAI_API_KEY env var.
     """
-    try:
-        from openai import OpenAI  # type: ignore
-    except Exception as e:
-        raise RuntimeError(
-            "Missing dependency `openai`. Install with: pip install openai"
-        ) from e
+    from openai import OpenAI  # type: ignore
 
-    client = OpenAI()
+
+    OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "")
+    if not OPENAI_API_KEY:
+        raise ValueError("Set OPENAI_API_KEY environment variable")
+    client = OpenAI(api_key=OPENAI_API_KEY)
 
     last_err: Optional[Exception] = None
     for attempt in range(max_retries):
@@ -184,6 +183,8 @@ def main() -> None:
 
             record = {
                 "key": key,
+                "info": item.get("info"),
+                "frames": item.get("frames"),
                 "annotation": {
                     "action": item.get("action"),
                     "body_part": item.get("body_part"),

@@ -205,6 +205,30 @@ def mmBody_train_test_path(mmBody_dir):
     test_data_list = get_all_npz_files(test_root)
 
     return train_data_list, test_data_list
+
+
+def hupr_train_test_path(hupr_dir: str):
+    """
+    HuPR directory layout:
+      hupr_dir/
+        train/**/**/*.npz
+        test/**/**/*.npz
+    Each .npz contains:
+      - point: (N,5)
+      - label: (15,2)  (we map to (3,15) by padding a zero z row)
+    """
+    train_root = os.path.join(hupr_dir, "train")
+    test_root = os.path.join(hupr_dir, "test")
+
+    def get_all_npz_files(root_dir):
+        file_list = []
+        for dirpath, _, filenames in os.walk(root_dir):
+            for fname in filenames:
+                if fname.endswith(".npz"):
+                    file_list.append(os.path.join(dirpath, fname))
+        return sorted(file_list)
+
+    return get_all_npz_files(train_root), get_all_npz_files(test_root)
     
 def remove_zero_padded_points(pc):
     zero_mask = np.all(pc == 0, axis=1)  # True: 제로 패딩 포인트
@@ -303,3 +327,54 @@ class mmBody_Dataset(Dataset):
             feature = jitter(feature)
             
         return torch.tensor(feature, dtype=torch.float32), torch.tensor(label, dtype=torch.float32)
+
+
+class HuPR_Dataset(Dataset):
+    """
+    HuPR processed point/label dataset.
+    - point: (N,5) [x,y,z,doppler,intensity]
+    - label: (15,2) -> expanded to (3,15) by adding z=0, then flattened to 45
+    """
+
+    def __init__(self, file_list, transform=False, train=True, *, feature_norm: str = "none", label_scale: float = 1.0):
+        self.file_list = file_list
+        self.transform = transform
+        self.train = train
+        self.feature_norm = feature_norm
+        self.label_scale = float(label_scale)
+
+    def __len__(self):
+        return len(self.file_list)
+
+    def __getitem__(self, idx):
+        data = np.load(self.file_list[idx], allow_pickle=True, mmap_mode=None)
+        feature = data["point"].copy().reshape(-1, 5)
+        label = data["label"].copy()
+
+        # remove zero-padded points if any (keep consistent with other datasets)
+        feature = remove_zero_padded_points(feature)
+        if feature.shape[0] == 0:
+            feature = np.zeros((1, 5))
+
+        # HuPR intensity can be extremely large; compress for stability
+        # (safe even if already small)
+        feature = feature.astype(np.float32, copy=False)
+        feature[:, 4] = np.log1p(np.maximum(feature[:, 4], 0.0))
+
+        feature = apply_feature_norm(feature, self.feature_norm)
+
+        # label: (15,2) -> (3,15) with z=0
+        label = label.astype(np.float32, copy=False)
+        if label.shape == (15, 2):
+            xy = label.T  # (2,15)
+            xyz = np.zeros((3, 15), dtype=np.float32)
+            xyz[0:2, :] = xy
+            label_out = xyz.reshape(45)
+        else:
+            # best-effort fallback
+            label_out = label.reshape(-1).astype(np.float32)
+
+        if self.label_scale != 1.0:
+            label_out = label_out * self.label_scale
+
+        return torch.tensor(feature, dtype=torch.float32), torch.tensor(label_out, dtype=torch.float32)

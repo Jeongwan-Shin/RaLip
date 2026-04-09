@@ -21,19 +21,23 @@ MIN_POINTS=15
 SCHEDULER="cosine"
 WARMUP_EPOCHS=5
 MIN_LR="1e-6"
+# HuPR label scale (dataset provider suggested 0.01)
+HUPR_LABEL_SCALE="0.01"
 # Try a stronger model; tune these if you want faster/slower.
 EMBED_DIM=256
 OUT_DIM=128
 NUM_LAYERS=4
 NUM_HEADS=4
 DEC_HEADS=4
-RUN_TAG="epochs${EPOCHS}_batch_size_${BATCH_SIZE}_lr_${LR}_pooling_${POOLING}_decoding_${DECODING}_label_${LABEL_MODE}_loss_${LOSS}_feat_${FEATURE_NORM}_sampling_${SAMPLING}_minpts${MIN_POINTS}_sched_${SCHEDULER}_wu${WARMUP_EPOCHS}_minlr${MIN_LR}_D${EMBED_DIM}_L${NUM_LAYERS}_H${NUM_HEADS}_OD${OUT_DIM}_DH${DEC_HEADS}"
+RUN_TAG="epochs${EPOCHS}_batch_size_${BATCH_SIZE}_lr_${LR}_pooling_${POOLING}_decoding_${DECODING}_label_${LABEL_MODE}_loss_${LOSS}_feat_${FEATURE_NORM}_sampling_${SAMPLING}_minpts${MIN_POINTS}_sched_${SCHEDULER}_wu${WARMUP_EPOCHS}_minlr${MIN_LR}_D${EMBED_DIM}_L${NUM_LAYERS}_H${NUM_HEADS}_OD${OUT_DIM}_DH${DEC_HEADS}_HuPR"
 
 python "${PROJECT_DIR}/train.py" \
   --mars_dir "/workspace/2025/JH_folder/dataset/split_MARS" \
   --mri_dir "/workspace/2025/JH_folder/dataset/split_mRI" \
   --mmfi_dir "/workspace/2025/JH_folder/dataset/split_mmFI" \
   --mmbody_dir "/workspace/2025/JH_folder/dataset/mmBody_pointcloud" \
+  --hupr_dir "/workspace/Train_mmWave_Encoder/datasets/HuPR/point_label_processed_data" \
+  --hupr_label_scale "${HUPR_LABEL_SCALE}" \
   --datasets "all" \
   --epochs "${EPOCHS}" \
   --batch_size "${BATCH_SIZE}" \

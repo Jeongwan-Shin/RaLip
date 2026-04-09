@@ -14,7 +14,16 @@ from torch.utils.data import WeightedRandomSampler
 from models.point_transformer import PoseRegressor, PoseRegressorConfig, PointTransformerEncoderConfig
 from models.point_transformer_with_poseDec import PoseRegressorPoseDec, PoseRegressorPoseDecConfig
 from models.point_transformer_with_crossDec import PoseRegressorCrossDec, PoseRegressorCrossDecConfig
-from utils.dataloader import (MARS_Dataset, mRI_Dataset, mmBody_Dataset, mmBody_train_test_path, mmFI_Dataset, train_test_cross_split,)
+from utils.dataloader import (
+    HuPR_Dataset,
+    MARS_Dataset,
+    mRI_Dataset,
+    mmBody_Dataset,
+    mmBody_train_test_path,
+    mmFI_Dataset,
+    hupr_train_test_path,
+    train_test_cross_split,
+)
 from utils.train_utils import (EvalMetrics, collate_pad_mask, default_run_tag, evaluate_pose_regressor, require_dir, selected_datasets, setup_log_file, tqdm_maybe, save_checkpoint,)
 from utils.train_utils import root_relative_pose
 from utils.dataset_config import ( MMFI_CROSS_SUBJECT_TRAIN, MMFI_CROSS_SUBJECT_TEST, MRI_CROSS_SUBJECT_TRAIN, MRI_CROSS_SUBJECT_TEST,)
@@ -25,7 +34,9 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--mri_dir", type=str, default=None, help="mRI root containing subject folders with .npz")
     p.add_argument("--mmfi_dir", type=str, default=None, help="mmFI root containing subject folders with .npz")
     p.add_argument("--mmbody_dir", type=str, default=None, help="mmBody root containing train/ and test/")
-    p.add_argument("--datasets", type=str, default="MARS,mRI,mmFI,mmBody", help="CSV: MARS,mRI,mmFI,mmBody (or 'all')")
+    p.add_argument("--hupr_dir", type=str, default=None, help="HuPR root containing train/ and test/ with .npz files")
+    p.add_argument("--hupr_label_scale", type=float, default=0.01, help="Scale factor applied to HuPR labels (e.g., 0.01).")
+    p.add_argument("--datasets", type=str, default="MARS,mRI,mmFI,mmBody,HuPR", help="CSV: MARS,mRI,mmFI,mmBody,HuPR (or 'all')")
     p.add_argument("--transform", action="store_true", help="Use dataset transform=True for train split")
     p.add_argument("--strict", action="store_true", help="Fail fast if selected dataset path is missing/invalid")
 
@@ -153,6 +164,24 @@ def main() -> None:
         mmbody_train_dataset = mmBody_Dataset(mmbody_train_files, transform=args.transform, train=True, feature_norm=args.feature_norm)
         mmbody_test_dataset = mmBody_Dataset(mmbody_test_files, transform=False, train=False, feature_norm=args.feature_norm)
         datasets["mmBody"] = (mmbody_train_dataset, mmbody_test_dataset)
+
+    if "HuPR" in selected and require_dir(args.hupr_dir, "hupr_dir", args.strict):
+        hupr_train_files, hupr_test_files = hupr_train_test_path(args.hupr_dir)
+        hupr_train_dataset = HuPR_Dataset(
+            hupr_train_files,
+            transform=args.transform,
+            train=True,
+            feature_norm=args.feature_norm,
+            label_scale=float(args.hupr_label_scale),
+        )
+        hupr_test_dataset = HuPR_Dataset(
+            hupr_test_files,
+            transform=False,
+            train=False,
+            feature_norm=args.feature_norm,
+            label_scale=float(args.hupr_label_scale),
+        )
+        datasets["HuPR"] = (hupr_train_dataset, hupr_test_dataset)
 
     if not datasets:
         print("No datasets loaded. Provide paths or use --strict to see errors.")
