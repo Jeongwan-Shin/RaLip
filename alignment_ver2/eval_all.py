@@ -86,9 +86,9 @@ def main():
 
     test_ds = MultiTextRadarDataset(
         test_entries,
-        mmbody_pc_dir="/home/jwshin/2025/JH_folder/dataset/mmBody_pointcloud",
-        mmfi_pc_dir="/home/jwshin/2025/JH_folder/dataset/split_mmFI",
-        mri_pc_dir="/home/jwshin/2025/JH_folder/dataset/split_mRI",
+        mmbody_pc_dir="/workspace/DATA/mmBody_pointcloud",
+        mmfi_pc_dir="/workspace/DATA/split_mmFI",
+        mri_pc_dir="/workspace/DATA/split_mRI",
         train=False,
     )
 

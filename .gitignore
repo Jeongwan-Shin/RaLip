@@ -1,0 +1,25 @@
+# Checkpoints & model weights
+*.pt
+*.pth
+*.bin
+*.safetensors
+
+# Logs
+*.log
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# HuggingFace cache
+.cache/

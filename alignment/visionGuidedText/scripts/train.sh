@@ -8,9 +8,9 @@ REPO_ROOT="$(cd "${PROJECT_DIR}/../.." && pwd)"
 ACTIONS_JSON="${REPO_ROOT}/data_generation/mm_actions.json"
 ACTIONS_TEXT="${REPO_ROOT}/data_generation/mm_actions_text.jsonl"
 
-MMBODY_PC_DIR="/home/jwshin/2025/JH_folder/dataset/mmBody_pointcloud"
-MMFI_PC_DIR="/home/jwshin/2025/JH_folder/dataset/split_mmFI"
-MRI_PC_DIR="/home/jwshin/2025/JH_folder/dataset/split_mRI"
+MMBODY_PC_DIR="/workspace/DATA/mmBody_pointcloud"
+MMFI_PC_DIR="/workspace/DATA/split_mmFI"
+MRI_PC_DIR="/workspace/DATA/split_mRI"
 
 MMBODY_IMG_DIR="/home/jwshin/Train_mmWave_Encoder/datasets/mmBody/img"
 MMFI_IMG_DIR="/home/jwshin/Train_mmWave_Encoder/datasets/mmFI/img"

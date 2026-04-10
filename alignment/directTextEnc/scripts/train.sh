@@ -8,9 +8,9 @@ REPO_ROOT="$(cd "${PROJECT_DIR}/../.." && pwd)"
 # ---- data paths ----
 ACTIONS_JSON="${REPO_ROOT}/data_generation/mm_actions.json"
 ACTIONS_TEXT="${REPO_ROOT}/data_generation/mm_actions_text.jsonl"
-MMBODY_DIR="/home/jwshin/2025/JH_folder/dataset/mmBody_pointcloud"
-MMFI_DIR="/home/jwshin/2025/JH_folder/dataset/split_mmFI"
-MRI_DIR="/home/jwshin/2025/JH_folder/dataset/split_mRI"
+MMBODY_DIR="/workspace/DATA/mmBody_pointcloud"
+MMFI_DIR="/workspace/DATA/split_mmFI"
+MRI_DIR="/workspace/DATA/split_mRI"
 
 # ---- pre-trained checkpoint ----
 PRETRAINED_CKPT="${REPO_ROOT}/pre_training/checkpoints/epochs100_batch_size_128_lr_1e-4_pooling_cls_decoding_crossDec_label_root_relative_loss_l1_feat_per_sample_zscore_sampling_balanced_minpts15_sched_cosine_wu5_minlr1e-6_D256_L4_H4_OD128_DH4_HuPR.pt"

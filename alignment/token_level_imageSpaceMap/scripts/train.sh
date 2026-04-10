@@ -4,9 +4,9 @@ SD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"; PD="$(cd "$SD/.." && pwd)"; 
 python "$PD/train.py" \
   --actions_json "$ROOT/data_generation/mm_actions.json" \
   --actions_text_jsonl "$ROOT/data_generation/mm_actions_text.jsonl" \
-  --mmbody_pc_dir "/home/jwshin/2025/JH_folder/dataset/mmBody_pointcloud" \
-  --mmfi_pc_dir "/home/jwshin/2025/JH_folder/dataset/split_mmFI" \
-  --mri_pc_dir "/home/jwshin/2025/JH_folder/dataset/split_mRI" \
+  --mmbody_pc_dir "/workspace/DATA/mmBody_pointcloud" \
+  --mmfi_pc_dir "/workspace/DATA/split_mmFI" \
+  --mri_pc_dir "/workspace/DATA/split_mRI" \
   --mmbody_img_dir "/home/jwshin/Train_mmWave_Encoder/datasets/mmBody/img" \
   --mmfi_img_dir "/home/jwshin/Train_mmWave_Encoder/datasets/mmFI/img" \
   --mri_img_dir "/home/jwshin/Train_mmWave_Encoder/datasets/mRI" \
